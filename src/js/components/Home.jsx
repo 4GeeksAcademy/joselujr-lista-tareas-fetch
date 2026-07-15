@@ -6,31 +6,53 @@ const Home = () => {
 
 	const [inputValue, setInputValue] = useState("")
 	const [tareas, setTareas] = useState([])
-	
-	useEffect(() => {
-		fetch("https://playground.4geeks.com/todo/users/joselujr")
-			.then(respuesta => {
-				console.log(respuesta.ok);
-				console.log(respuesta.status);
-				return respuesta.json();
-			})
-			.then(datos => {
-				console.log(datos);
-				setTareas(datos.todos)
-
-			})
-
-			.catch(error => {
-				console.log(error);
-
-			})
-
-	}, [])
-
 	const borrarTarea = (indexEliminar) => {
 		const nuevasTareas = tareas.filter((tarea, index) => index !== indexEliminar);
 		setTareas(nuevasTareas);
 	};
+
+	const crearUsuario = async () => {
+		const response = await fetch("https://playground.4geeks.com/todo/users/joselujr", {
+			method: "POST"
+		})
+		const data = await response.json();
+		console.log(data);
+	}
+
+	const crearTarea = async () => {
+		const response = await fetch("https://playground.4geeks.com/todo/todos/joselujr", {
+			method: "POST",
+			body: JSON.stringify({
+				"label": inputValue,
+				"is_done": false
+			}),
+			headers: {
+				"content-Type": "application/json"
+			}
+		})
+		const data = await response.json();
+		if (response.ok) {
+			traerTarea()
+		}
+	}
+
+	const traerTarea = async () => {
+		const response = await fetch ("https://playground.4geeks.com/todo/users/joselujr",)
+			if(!response.ok) {
+				crearUsuario()
+				return
+			}
+			const data = await response.json()
+			setTareas(data.todos)
+	}
+//este fue el ultimo paso, terminar de crear las const restantes
+	const eliminarTarea = async () => {
+
+	}
+
+
+
+	useEffect(() => { }, [])
 
 
 	return (
@@ -66,6 +88,8 @@ const Home = () => {
 	);
 };
 
+
+
 export default Home;
 
 
@@ -89,4 +113,16 @@ export default Home;
 		console.log(error);
 
 	})
+*/
+
+/*fetch("https://playground.4geeks.com/todo/users/joselujr", {
+	method: "DELETE"
+})
+.then(respuesta => {
+	console.log(respuesta.ok);
+	console.log(respuesta.status);
+})
+.catch(error => {
+	console.log(error);
+});
 */

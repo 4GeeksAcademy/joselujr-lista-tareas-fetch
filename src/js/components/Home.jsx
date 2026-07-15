@@ -1,10 +1,32 @@
 import React, { useState } from "react";
+import { useEffect } from 'react';
 
 //create your first component
 const Home = () => {
 
 	const [inputValue, setInputValue] = useState("")
 	const [tareas, setTareas] = useState([])
+	
+	useEffect(() => {
+		fetch("https://playground.4geeks.com/todo/users/joselujr")
+			.then(respuesta => {
+				console.log(respuesta.ok);
+				console.log(respuesta.status);
+				return respuesta.json();
+			})
+			.then(datos => {
+				console.log(datos);
+				setTareas(datos.todos)
+
+			})
+
+			.catch(error => {
+				console.log(error);
+
+			})
+
+	}, [])
+
 	const borrarTarea = (indexEliminar) => {
 		const nuevasTareas = tareas.filter((tarea, index) => index !== indexEliminar);
 		setTareas(nuevasTareas);
@@ -45,3 +67,26 @@ const Home = () => {
 };
 
 export default Home;
+
+
+
+/*fetch("https://playground.4geeks.com/todo/users/joselujr", {
+	method: "POST"
+})
+
+	.then(respuesta => {
+		console.log(respuesta.ok);
+		console.log(respuesta.status);
+		return respuesta.json();
+	})
+
+	.then(datos => {
+		console.log(datos);
+
+	})
+
+	.catch(error => {
+		console.log(error);
+
+	})
+*/

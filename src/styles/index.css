@@ -42,3 +42,9 @@ body {
 p {
     color: #e63e4c;
 }
+
+#boton {
+    font-size: 25px;
+    margin-top: 20px;
+    background-color: #e63e4c;
+}

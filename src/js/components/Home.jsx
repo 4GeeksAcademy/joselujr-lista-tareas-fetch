@@ -1,15 +1,10 @@
-import React, { useState } from "react";
-import { useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
-//create your first component
 const Home = () => {
 
 	const [inputValue, setInputValue] = useState("")
 	const [tareas, setTareas] = useState([])
-	const borrarTarea = (indexEliminar) => {
-		const nuevasTareas = tareas.filter((tarea, index) => index !== indexEliminar);
-		setTareas(nuevasTareas);
-	};
+
 
 	const crearUsuario = async () => {
 		const response = await fetch("https://playground.4geeks.com/todo/users/joselujr", {
@@ -37,23 +32,40 @@ const Home = () => {
 	}
 
 	const traerTarea = async () => {
-		const response = await fetch ("https://playground.4geeks.com/todo/users/joselujr",)
-			if(!response.ok) {
-				crearUsuario()
-				return
-			}
-			const data = await response.json()
-			setTareas(data.todos)
-	}
-//este fue el ultimo paso, terminar de crear las const restantes
-	const eliminarTarea = async () => {
+		const response = await fetch("https://playground.4geeks.com/todo/users/joselujr",)
+		if (!response.ok) {
+			crearUsuario()
+			return
+		}
+		const data = await response.json()
+		console.log(data.todos);
 
+		setTareas(data.todos)
 	}
 
+	const eliminarTarea = async (id) => {
+		const response = await fetch(`https://playground.4geeks.com/todo/todos/${id}`, {
+			method: "DELETE"
+		})
+		if (response.ok) {
+			traerTarea()
+		}
+		console.log(response.ok);
+		console.log(response.status);
+		console.log(id);
+	}
 
+	const borrarTodo = async () => {
+		const response = await fetch("https://playground.4geeks.com/todo/users/joselujr", {
+			method: "DELETE"
+		})
+		if (response.ok) {
+			await crearUsuario()
+			setTareas([])
+		}
+	}
 
-	useEffect(() => { }, [])
-
+	useEffect(() => { traerTarea() }, [])
 
 	return (
 		<div className=" container-master text-center">
@@ -64,7 +76,7 @@ const Home = () => {
 				onChange={e => setInputValue(e.target.value)}
 				onKeyDown={e => {
 					if (e.key === "Enter" && inputValue.trim().length > 0) {
-						setTareas([...tareas, inputValue])
+						crearTarea()
 						setInputValue("")
 					}
 				}
@@ -76,7 +88,7 @@ const Home = () => {
 				{
 					tareas.map((tarea, index) => {
 						return (
-							<li key={index}> {tarea} <span onClick={() => borrarTarea(index)}> ❌</span> </li>
+							<li key={index}> {tarea.label} {" "} <span onClick={() => eliminarTarea(tarea.id)}> ❌</span> </li>
 						)
 					})
 				}
@@ -84,45 +96,12 @@ const Home = () => {
 			</ul>
 			<p>{tareas.length} tareas pendientes</p>
 
+			<button id="boton" onClick={borrarTodo}> <strong>Borrar Toda Lista</strong></button>
+
 		</div>
 	);
+
 };
-
-
 
 export default Home;
 
-
-
-/*fetch("https://playground.4geeks.com/todo/users/joselujr", {
-	method: "POST"
-})
-
-	.then(respuesta => {
-		console.log(respuesta.ok);
-		console.log(respuesta.status);
-		return respuesta.json();
-	})
-
-	.then(datos => {
-		console.log(datos);
-
-	})
-
-	.catch(error => {
-		console.log(error);
-
-	})
-*/
-
-/*fetch("https://playground.4geeks.com/todo/users/joselujr", {
-	method: "DELETE"
-})
-.then(respuesta => {
-	console.log(respuesta.ok);
-	console.log(respuesta.status);
-})
-.catch(error => {
-	console.log(error);
-});
-*/
